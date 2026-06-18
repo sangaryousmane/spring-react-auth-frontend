@@ -1,10 +1,10 @@
 // For app Menubar
 
 import {assets} from "../assets/assets";
-import {useNavigation} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 const Menubar = () => {
-    // const navigate = useNavigation();
+    const navigate = useNavigate();
 
     return (
         <nav className="navbar bg-white px-5 py-4 d-flex justify-content-between align-items-center">
@@ -13,7 +13,7 @@ const Menubar = () => {
                 <span className="fw-bold fs-4 text-dark">Auth</span>
             </div>
 
-            <div className="btn btn-outline-dark rounded-pill px-3">
+            <div className="btn btn-outline-dark rounded-pill px-3" onClick={() => navigate("/login")}>
                 Login <i className="bi bi-arrow-right ms-2"></i>
             </div>
         </nav>
