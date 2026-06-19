@@ -4,14 +4,14 @@ import {Link, useNavigate} from "react-router-dom";
 import {assets} from "../assets/assets";
 import {useContext, useState} from "react";
 import axios from "axios";
-import {App_Constants} from "../utils/constants";
 import {toast} from "react-toastify";
+import {AppContext} from "../context/AppContext";
 
 const Login = () => {
-    const {backendURL} = useContext(App_Constants);
+    const {backendURL} = useContext(AppContext);
     const navigate = useNavigate();
     const [isCreateAccount, setIsCreateAccount] = useState(true);
-    const [name, setName] = useState("");
+    const [fullName, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -24,7 +24,7 @@ const Login = () => {
         try{
             if (isCreateAccount){
                 // Register API
-                const response = await axios.post(`${backendURL}/register`, {name, email, password})
+                const response = await axios.post(`${backendURL}/register`, {fullName, email, password})
                 if (response.status === 201){
                     navigate("/");
                     toast.success("Account created successfully.");
@@ -69,24 +69,30 @@ const Login = () => {
                             <div className="mb-3">
                                 <label htmlFor="fullName" className="form-label">Full Name</label>
                                 <input type="text" className="form-control"
-                                       id="fullName" placeholder="Full Name" />
+                                       id="fullName" placeholder="Full Name" value={fullName}
+                                onChange = {(e) => setName(e.target.value)}/>
                             </div>
                         )
                     }
                     <div className="mb-3">
                         <label htmlFor="email" className="form-label">Email Id</label>
-                        <input type="text" id="email" name="email" placeholder="Enter your email"
-                               className="form-control" required/>
+                        <input type="text" id="email" name="email" value={email} placeholder="Enter your email"
+                               className="form-control"
+                               onChange={(e) => setEmail(e.target.value)}
+                               required/>
                     </div>
                     <div className="mb-3">
                         <label htmlFor="password" className="form-label">Password</label>
-                        <input type="password" name="password" placeholder="**********" className="form-control" required/>
+                        <input type="password" name="password" value={password} placeholder="**********"
+                               className="form-control"
+                               onChange={(e) => setPassword(e.target.value)}
+                               required/>
                     </div>
                     <div className="d-flex justify-content-between mb-3">
                         <Link to="/reset-password" className="text-decoration-none"> Forgot Password? </Link>
                     </div>
                     <button type="submit" className="btn btn-primary w-100" disabled={loading}>
-                        {loading ? "Loading..." : isCreateAccount ? "Create" : "Login"}
+                        {loading ? "Loading..." : isCreateAccount ? "Sign Up" : "Login"}
                     </button>
 
                 </form>

@@ -6,11 +6,11 @@ export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
     const backendURL = App_Constants.BACKEND_URL;
-
-
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userData, setUserData] = useState({});
 
     const contextValue = {
-        backendURL,
+        backendURL, isLoggedIn, setIsLoggedIn, userData, setUserData
     }
 
     return (
