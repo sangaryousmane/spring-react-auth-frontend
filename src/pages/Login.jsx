@@ -11,20 +11,27 @@ const Login = () => {
     const {backendURL} = useContext(AppContext);
     const navigate = useNavigate();
     const [isCreateAccount, setIsCreateAccount] = useState(true);
-    const [fullName, setName] = useState("");
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
     const onSubmitHandler = async (e) => {
         e.preventDefault();
-        axios.defaults.withCredentials = true;
+        // axios.defaults.withCredentials = true;
         setLoading(true);
 
         try{
             if (isCreateAccount){
                 // Register API
-                const response = await axios.post(`${backendURL}/register`, {fullName, email, password})
+                const response = await axios.post(
+                    `${backendURL}/register`,
+                    {
+                        name,
+                        email,
+                        password
+                    })
+
                 if (response.status === 201){
                     navigate("/");
                     toast.success("Account created successfully.");
@@ -36,7 +43,11 @@ const Login = () => {
 
             }
         } catch(err){
-            toast.error(err.response.data.message);
+            toast.error(
+                err.response?.data?.message ||
+                err.message ||
+                "Something went wrong"
+            );
         } finally {
             setLoading(false);
         }
@@ -69,7 +80,7 @@ const Login = () => {
                             <div className="mb-3">
                                 <label htmlFor="fullName" className="form-label">Full Name</label>
                                 <input type="text" className="form-control"
-                                       id="fullName" placeholder="Full Name" value={fullName}
+                                       id="fullName" placeholder="Full Name" value={name}
                                 onChange = {(e) => setName(e.target.value)}/>
                             </div>
                         )
