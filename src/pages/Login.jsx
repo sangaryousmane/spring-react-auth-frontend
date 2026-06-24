@@ -8,7 +8,7 @@ import {toast} from "react-toastify";
 import {AppContext} from "../context/AppContext";
 
 const Login = () => {
-    const {backendURL} = useContext(AppContext);
+    const {backendURL, setIsLoggedIn, getUserData} = useContext(AppContext);
     const navigate = useNavigate();
     const [isCreateAccount, setIsCreateAccount] = useState(true);
     const [name, setName] = useState("");
@@ -22,7 +22,7 @@ const Login = () => {
         setLoading(true);
 
         try{
-            if (isCreateAccount){
+            if (isCreateAccount) {
                 // Register API
                 const response = await axios.post(
                     `${backendURL}/register`,
@@ -34,7 +34,7 @@ const Login = () => {
                         withCredentials: true
                     })
 
-                if (response.status === 201){
+                if (response.status === 201) {
                     navigate("/");
                     toast.success("Account created successfully.");
                 } else {
@@ -42,9 +42,17 @@ const Login = () => {
                 }
             } else {
                 // Login API
-
+                const response = await axios.post(
+                    `${backendURL}/login`,
+                    {email, password}
+                )
+                if (response.status === 200){
+                    setIsLoggedIn(true);
+                    getUserData();
+                    navigate("/");
+                }
             }
-        } catch(err){
+        } catch(err) {
             toast.error(
                 err.response?.data?.message ||
                 err.message ||
