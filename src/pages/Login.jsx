@@ -18,7 +18,7 @@ const Login = () => {
 
     const onSubmitHandler = async (e) => {
         e.preventDefault();
-        // axios.defaults.withCredentials = true;
+        axios.defaults.withCredentials = true;
         setLoading(true);
 
         try{
@@ -30,10 +30,8 @@ const Login = () => {
                         name,
                         email,
                         password
-                    }, {
-                        withCredentials: true
-                    })
-
+                    },
+                    )
                 if (response.status === 201){
                     navigate("/");
                     toast.success("Account created successfully.");
@@ -41,7 +39,16 @@ const Login = () => {
                     toast.error("Email already exists!");
                 }
             } else {
-                // Login API
+               const response = await axios.post(
+                   `${backendURL}/login`,
+                   {email, password})
+
+                if (response.status === 200) {
+                    setIsLoggedIn(true);
+                    navigate("/");
+                } else {
+                    toast.error("Email or Password Incorrect.");
+                }
 
             }
         } catch(err){
