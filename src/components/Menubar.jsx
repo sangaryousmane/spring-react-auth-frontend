@@ -2,9 +2,14 @@
 
 import {assets} from "../assets/assets";
 import {useNavigate} from "react-router-dom";
+import {useContext, useRef, useState} from "react";
+import {AppContext} from "../context/AppContext";
 
 const Menubar = () => {
     const navigate = useNavigate();
+    const [dropDownOpen, setDropDownOpen] = useState(false);
+    const {userData} = useContext(AppContext);
+    const dropDownRef = useRef(null);
 
     return (
         <nav className="navbar bg-white px-5 py-4 d-flex justify-content-between align-items-center">
@@ -13,9 +18,52 @@ const Menubar = () => {
                 <span className="fw-bold fs-4 text-dark">Auth</span>
             </div>
 
-            <div className="btn btn-outline-dark rounded-pill px-3" onClick={() => navigate("/login")}>
-                Login <i className="bi bi-arrow-right ms-2"></i>
+           userData ?
+            (
+            <div className="position-relative" ref={dropDownRef}>
+                <div className="bg-dark text-white rounded-circle d-flex justify-content-center align-items-center"
+                     style={{
+                         width: "40px",
+                         height: "40px",
+                         cursor: "pointer",
+                         userSelect: "none",
+                     }} onClick={() => setDropDownOpen((prev) => !prev)}>
+
+                    {userData.name[0].toUpperCase()}
+                </div>
+
+
+                {dropDownOpen && (
+                    <div className="position-absolute shadow bg-white rounded p-2"
+                         style={{
+                             top: "50px",
+                             right:0,
+                             zIndex: 1000}}>
+
+                        {!userData.isAccountVerified && (
+                            <div className="dropdown-item py-1 px-2"
+                            style={{
+                                cursor: "pointer"
+                            }}>
+                                Verify Email
+                            </div>
+                        )}
+                        <div className="dropdown-item py-1 px-2 text-danger"
+                             style={{
+                                 cursor: "pointer"
+                             }}>
+                            Logout
+                        </div>
+                    </div>
+                )}
             </div>
+            ):(
+            <div className="btn btn-outline-dark rounded-pill px-3"
+                 onClick={() => navigate("/login")}>
+            Login <i className="bi bi-arrow-right ms-2"></i>
+            </div>
+            )
+
         </nav>
     )
 }
