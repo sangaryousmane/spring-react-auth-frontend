@@ -18,7 +18,7 @@ const Menubar = () => {
                 <span className="fw-bold fs-4 text-dark">Auth</span>
             </div>
 
-           userData ?
+            {userData ?
             (
             <div className="position-relative" ref={dropDownRef}>
                 <div className="bg-dark text-white rounded-circle d-flex justify-content-center align-items-center"
@@ -27,9 +27,9 @@ const Menubar = () => {
                          height: "40px",
                          cursor: "pointer",
                          userSelect: "none",
-                     }} onClick={() => setDropDownOpen((prev) => !prev)}>
+                     }} onClick={() => setDropDownOpen(prev => !prev)}>
 
-                    {userData.name[0].toUpperCase()}
+                    {userData.name.charAt(0).toUpperCase()}
                 </div>
 
 
@@ -62,7 +62,7 @@ const Menubar = () => {
                  onClick={() => navigate("/login")}>
             Login <i className="bi bi-arrow-right ms-2"></i>
             </div>
-            )
+            )}
 
         </nav>
     )
