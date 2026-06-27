@@ -8,11 +8,13 @@ export const AppContext = createContext();
 export const AppContextProvider = (props) => {
     const backendURL = App_Constants.BACKEND_URL;
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [userData, setUserData] = useState({});
+    const [userData, setUserData] = useState(null);
 
     const getUserData = async () => {
         try {
-            const response = await axios.get(`${backendURL}/profile`)
+            const response = await axios.get(
+                `${backendURL}/profile`,
+                {withCredentials: true})
 
             if (response.status === 200) {
                 setUserData(response.data);

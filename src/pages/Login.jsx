@@ -44,11 +44,14 @@ const Login = () => {
                 // Login API
                 const response = await axios.post(
                     `${backendURL}/login`,
-                    {email, password}
+                    {email, password},
+                    {
+                        withCredentials: true
+                    }
                 )
                 if (response.status === 200){
                     setIsLoggedIn(true);
-                    getUserData();
+                    await getUserData();
                     navigate("/");
                 }
             }
