@@ -18,7 +18,7 @@ const Login = () => {
 
     const onSubmitHandler = async (e) => {
         e.preventDefault();
-        // axios.defaults.withCredentials = true;
+        axios.defaults.withCredentials = true;
         setLoading(true);
 
         try{
@@ -30,8 +30,6 @@ const Login = () => {
                         name,
                         email,
                         password
-                    }, {
-                        withCredentials: true
                     })
 
                 if (response.status === 201) {
@@ -44,11 +42,9 @@ const Login = () => {
                 // Login API
                 const response = await axios.post(
                     `${backendURL}/login`,
-                    {email, password},
                     {
-                        withCredentials: true
-                    }
-                )
+                        email, password
+                    })
                 if (response.status === 200){
                     setIsLoggedIn(true);
                     await getUserData();
