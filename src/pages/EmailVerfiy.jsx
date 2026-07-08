@@ -2,14 +2,46 @@
 
 import {Link, useNavigate} from "react-router-dom";
 import {assets} from "../assets/assets";
-import {useContext, useRef, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {AppContext} from "../context/AppContext";
+import {toast} from "react-toastify";
+import axios, {post} from "axios";
 
 const EmailVerify = () => {
     const inputRef = useRef([]);
     const [loading, settLoading] = useState(false);
-    const {getUserData, isLoggedIn, userData} = useContext(AppContext);
+    const {getUserData, isLoggedIn, userData, backendURL} = useContext(AppContext);
     const navigate = useNavigate();
+
+    const handleVerify = async () => {
+        const otp = inputRef.current.map(i => i.value).join("");
+        if (otp.length !== 6) {
+            toast.error("Please enter all 6 digits of the OTP.");
+            return;
+        }
+
+        settLoading(true);
+
+        try {
+            // axios.defaults.withCredentials = true;
+            const response = await axios.post(backendURL+"/verify-otp", {otp})
+            if (response.status === 200) {
+                toast.success("OTP Verification Successful");
+                getUserData();
+                navigate("/");
+            } else {
+                toast.error("Invalid OTP");
+            }
+        } catch (error) {
+            toast.error("OTP Verification Failed. Please try again.");
+        } finally {
+            settLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        isLoggedIn && userData && userData.isAccountVerified && navigate("/")
+    }, [isLoggedIn, userData]);
 
     return (
         <div
@@ -64,6 +96,87 @@ const EmailVerify = () => {
                             ref={(el) =>
                                 (inputRef.current[i] = el)
                             }
+                            onInput={(e) => {
+                                e.target.value = e.target.value.replace(/\D/g, "");
+                            }}
+
+                            onChange={(e) => {
+
+                                if (e.target.value && i < 5) {
+                                    inputRef.current[i + 1].focus();
+                                }
+
+                            }}
+
+                            onKeyDown={(e) => {
+
+                                if (
+                                    e.key === "Backspace" &&
+                                    !e.target.value &&
+                                    i > 0
+                                ) {
+                                    inputRef.current[i - 1].focus();
+                                }
+
+                            }}
+
+                            onPaste={(e) => {
+
+                                e.preventDefault();
+
+                                const pasted = e.clipboardData
+                                    .getData("text")
+                                    .trim();
+
+                                if (!/^\d{6}$/.test(pasted)) return;
+
+                                pasted.split("").forEach((digit, index) => {
+                                    inputRef.current[index].value = digit;
+                                });
+
+                                inputRef.current[5].focus();
+
+                            }}
+                            onInput={(e) => {
+                            e.target.value = e.target.value.replace(/\D/g, "");
+                        }}
+                            onChange={(e) => {
+
+                                if (e.target.value && i < 5) {
+                                    inputRef.current[i + 1].focus();
+                                }
+
+                            }}
+
+                            onKeyDown={(e) => {
+
+                                if (
+                                    e.key === "Backspace" &&
+                                    !e.target.value &&
+                                    i > 0
+                                ) {
+                                    inputRef.current[i - 1].focus();
+                                }
+
+                            }}
+
+                            onPaste={(e) => {
+
+                                e.preventDefault();
+
+                                const pasted = e.clipboardData
+                                    .getData("text")
+                                    .trim();
+
+                                if (!/^\d{6}$/.test(pasted)) return;
+
+                                pasted.split("").forEach((digit, index) => {
+                                    inputRef.current[index].value = digit;
+                                });
+
+                                inputRef.current[5].focus();
+
+                            }}
                         />
 
                     ))}
@@ -72,10 +185,10 @@ const EmailVerify = () => {
 
                 <button
                     className="btn btn-primary w-100 fw-semibold"
-                    disabled={loading}
+                    disabled={loading} onClick={handleVerify}
                 >
                     {loading
-                        ? "Loading..."
+                        ? "Verifying..."
                         : "Verify Email"}
                 </button>
 
