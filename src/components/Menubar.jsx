@@ -4,13 +4,14 @@ import {assets} from "../assets/assets";
 import {useNavigate} from "react-router-dom";
 import {useContext, useEffect, useRef, useState} from "react";
 import {AppContext} from "../context/AppContext";
-import axios from "axios";
 import {toast} from "react-toastify";
+import authService from "../services/authService";
+import {emailService} from "../services";
 
 const Menubar = () => {
     const navigate = useNavigate();
     const [dropDownOpen, setDropDownOpen] = useState(false);
-    const {userData, backendURL, setUserData, setIsLoggedIn} = useContext(AppContext);
+    const {userData, setUserData, setIsLoggedIn} = useContext(AppContext);
     const dropDownRef = useRef(null);
 
     useEffect(() => {
@@ -26,8 +27,7 @@ const Menubar = () => {
     const handleLogout = async () => {
 
         try {
-            axios.defaults.withCredentials = true;
-            const response = await axios.post(`${backendURL}/logout`);
+            const response = await authService.logout(`/logout`);
             if (response.status === 200) {
                 setIsLoggedIn(false);
                 setUserData(false);
@@ -38,24 +38,22 @@ const Menubar = () => {
         }
     }
 
-        const sendVerificationOTP = async () => {
-            try {
-                axios.defaults.withCredentials = true;
-                const response = await axios.post(
-                    `${backendURL}/send-otp`
-                )
+    const sendVerificationOTP = async () => {
+        try {
+            const response = await emailService.sendOTP(`/send-otp`)
                 if (response.status === 200) {
                     navigate("/email-verify");
                     toast.success("OTP sent successfully");
                 } else {
                     toast.error("Unable to send OTP.");
                 }
-            } catch (err) {
-                toast.error(err.response.data.message);
-            }
         }
+        catch (err) {
+            toast.error(err.response.data.message);
+        }
+    }
 
-        return (
+    return (
             <nav className="navbar bg-white px-5 py-4 d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center gap-2">
                     <img src={assets.logo_home} alt="logo" width={32} height={32}/>
