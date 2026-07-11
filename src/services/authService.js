@@ -1,9 +1,22 @@
 import api from "../utils/api";
 
-const register = async (email, password) =>{
-    return await api.post(
-        `/login`,
-        {
-            email, password
-        });
+const authService = {
+
+    register(data)  {
+        return api.post("/register", data);
+    },
+
+    login(data) {
+        return api.post("/login", data);
+    },
+
+    logout() {
+        return api.post("/logout");
+    },
+
+    getAuthState(){
+        return api.post("/is-authenticated");
+    }
 }
+
+export default authService;

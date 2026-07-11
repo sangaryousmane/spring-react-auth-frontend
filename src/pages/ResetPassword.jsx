@@ -1,8 +1,12 @@
 import {Link} from "react-router-dom";
 import {assets} from "../assets/assets";
+import {useRef, useState} from "react";
 
 
 const ResetPassword = () => {
+
+    const inputsRef = useRef([]);
+    const [loading, setLoading] = useState(true);
 
     return (
         <div className="d-flex align-items-center justify-content-center vh-100 position-relative"

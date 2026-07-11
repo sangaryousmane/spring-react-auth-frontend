@@ -5,12 +5,12 @@ import {assets} from "../assets/assets";
 import {useContext, useEffect, useRef, useState} from "react";
 import {AppContext} from "../context/AppContext";
 import {toast} from "react-toastify";
-import axios, {post} from "axios";
+import {emailService} from "../services";
 
 const EmailVerify = () => {
     const inputRef = useRef([]);
     const [loading, settLoading] = useState(false);
-    const {getUserData, isLoggedIn, userData, backendURL} = useContext(AppContext);
+    const {getUserData, isLoggedIn, userData} = useContext(AppContext);
     const navigate = useNavigate();
 
     const handleVerify = async () => {
@@ -23,8 +23,11 @@ const EmailVerify = () => {
         settLoading(true);
 
         try {
-            // axios.defaults.withCredentials = true;
-            const response = await axios.post(backendURL+"/verify-otp", {otp})
+            const response = await emailService.verifyOTP(
+                `/verify-otp`, {
+                    otp
+                })
+
             if (response.status === 200) {
                 toast.success("OTP Verification Successful");
                 getUserData();
@@ -33,7 +36,9 @@ const EmailVerify = () => {
                 toast.error("Invalid OTP");
             }
         } catch (error) {
-            toast.error("OTP Verification Failed. Please try again.");
+            toast.error(
+                error.response?.data?.message ||
+                error.message || "OTP Verification Failed. Please try again.");
         } finally {
             settLoading(false);
         }
@@ -99,7 +104,6 @@ const EmailVerify = () => {
                             onInput={(e) => {
                                 e.target.value = e.target.value.replace(/\D/g, "");
                             }}
-
                             onChange={(e) => {
 
                                 if (e.target.value && i < 5) {
@@ -107,7 +111,6 @@ const EmailVerify = () => {
                                 }
 
                             }}
-
                             onKeyDown={(e) => {
 
                                 if (
@@ -119,7 +122,6 @@ const EmailVerify = () => {
                                 }
 
                             }}
-
                             onPaste={(e) => {
 
                                 e.preventDefault();

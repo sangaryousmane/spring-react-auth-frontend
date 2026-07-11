@@ -1,22 +1,17 @@
 import {createContext, useEffect, useState} from "react";
-import {App_Constants} from "../utils/constants";
-import axios, {get} from "axios";
 import {toast} from "react-toastify";
+import {authService, profileService} from "../services";
 
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
 
-    axios.defaults.withCredentials = true;
-    const backendURL = App_Constants.BACKEND_URL;
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userData, setUserData] = useState(null);
 
     const getUserData = async () => {
         try {
-            const response = await axios.get(
-                `${backendURL}/profile`,
-                {withCredentials: true})
+            const response = await profileService.getProfile(`/profile`)
 
             if (response.status === 200) {
                 setUserData(response.data);
@@ -31,7 +26,7 @@ export const AppContextProvider = (props) => {
     const getAuthState = async () => {
 
         try {
-            const response = await axios.get(`${backendURL}/is-authenticated`);
+            const response = await authService.getAuthState();
             if (response.status === 200 && response.data === true) {
                 setIsLoggedIn(true);
                 await getUserData();
@@ -50,13 +45,13 @@ export const AppContextProvider = (props) => {
     }
 
     useEffect(() => {
-        getAuthState();
+        void getAuthState();
     }, []);
 
 
     const contextValue = {
-        backendURL, isLoggedIn, setIsLoggedIn,
-        userData, setUserData, getUserData
+        isLoggedIn, setIsLoggedIn,
+        userData, setUserData, getUserData, getAuthState
     }
 
     return (
