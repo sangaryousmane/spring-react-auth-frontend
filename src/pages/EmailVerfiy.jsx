@@ -149,7 +149,6 @@ const EmailVerify = () => {
                                 }
 
                             }}
-
                             onKeyDown={(e) => {
 
                                 if (
@@ -161,7 +160,6 @@ const EmailVerify = () => {
                                 }
 
                             }}
-
                             onPaste={(e) => {
 
                                 e.preventDefault();
