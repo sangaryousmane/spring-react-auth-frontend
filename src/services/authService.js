@@ -15,7 +15,7 @@ const authService = {
     },
 
     getAuthState(){
-        return api.post("/is-authenticated");
+        return api.get("/is-authenticated");
     }
 }
 

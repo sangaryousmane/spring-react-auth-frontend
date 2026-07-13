@@ -16,6 +16,10 @@ const emailService = {
 
     resetPassword(data) {
         return api.post("/reset-password", data);
+    },
+
+    sendResetPassword(email, newPassword) {
+        return api.post("/send-reset-otp?email="+email+"&newPassword="+newPassword);
     }
 }
 
