@@ -1,5 +1,6 @@
 import api from "../utils/api";
 
+// This service handles all the authentication services.
 const authService = {
 
     register(data)  {

@@ -24,7 +24,7 @@ const EmailVerify = () => {
 
         try {
             const response = await emailService.verifyOTP(
-                `/verify-otp`, {
+                {
                     otp
                 })
 

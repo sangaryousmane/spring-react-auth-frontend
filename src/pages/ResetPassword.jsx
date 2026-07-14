@@ -10,8 +10,8 @@ const ResetPassword = () => {
 
     const inputRef = useRef([]);
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(true);
-    const {getUserData, isLoggedIn, userData, backendURL} = useContext(AppContext);
+    const [loading, setLoading] = useState(false);
+    const {getUserData, isLoggedIn, userData} = useContext(AppContext);
     const [email, setEmail] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [otp, setOtp] = useState("");
@@ -24,7 +24,7 @@ const ResetPassword = () => {
         e.preventDefault();
         setLoading(true);
         try{
-            const response =  await emailService.sendResetPassword(email, newPassword);
+            const response =  await emailService.sendResetPasswordOTP(email);
             if (response.status === 200){
                 toast.success("Password reset OTP sent successfully!");
                 setIsEmailSent(true);
@@ -38,6 +38,40 @@ const ResetPassword = () => {
         }
     }
 
+    // Handle the verification of passwords.
+    const handleVerify = () =>{
+        const otp = inputRef.current.map((input) => input.value).join("");
+        if (otp.length !== 6){
+            toast.error("Please enter all 6 digits of the OTP.");
+            return;
+        }
+        setOtp(otp);
+        setIsEmailSent(true);
+    }
+
+    // Handle the reset of passwords
+    const onSubmitNewPassword = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try{
+            const response = await emailService.resetPassword(
+                {
+                    otp, newPassword
+                });
+            if (response.status === 200){
+                toast.success("Password reset successfully!");
+                navigate("/login");
+            } else {
+                toast.error("Something went wrong, please try again.");
+            }
+        } catch (error) {
+            toast.error(error.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    // event key handlers.
     const handleKeyDown = (e, i) => {
         if (
             e.key === "Backspace" &&
@@ -83,7 +117,7 @@ const ResetPassword = () => {
                 <span className="fs-4 fw-semibold text-dark">Authify</span>
             </Link>
 
-            {/*Reset Password Card*/}
+            {/* Reset Password Card */}
             {!isEmailSent && (
                 <div className="rounded-4 p-5 text-center bg-white"
                 style={{
@@ -113,8 +147,8 @@ const ResetPassword = () => {
                 </div>
             )}
 
-            {/* OTP Card*/}
-            {isOTPSubmitted && (
+            {/* OTP Card */}
+            {!isOTPSubmitted && isEmailSent && (
                 <div
                     className="bg-white rounded-4 shadow p-5"
                     style={{
@@ -145,13 +179,15 @@ const ResetPassword = () => {
                         ))}
                     </div>
 
-                    <button className="btn btn-primary w-100 fw-semibold" disabled={loading}>
+                    <button className="btn btn-primary w-100 fw-semibold"
+                            disabled={loading}
+                            onClick={handleVerify}>
                         {loading ? "Verifying..." : "Verify Email"}
                     </button>
                 </div>
             )}
 
-            {/*Enter new password card*/}
+            {/* { Enter new password card } */}
             {isOTPSubmitted && isEmailSent && (
                 <div className="rounded-4 p-4 text-center bg-white"
                      style={{
@@ -161,7 +197,7 @@ const ResetPassword = () => {
 
                     <h4>New Password</h4>
                     <p className="mb-4">Enter the new password below</p>
-                    <form>
+                    <form onSubmit={onSubmitNewPassword}>
                         <div className="input-group mb-4 bg-secondary bg-opacity-10 rounded-pill">
                             <span className="input-group-text bg-transparent border-0 ps-4">
                                 <i className="bi bi-person-fill-lock"></i>
@@ -175,7 +211,9 @@ const ResetPassword = () => {
                                    required
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary w-100">Submit</button>
+                        <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+                            {loading ? "Loading..." : "Submit"}
+                        </button>
                     </form>
                 </div>
             )}

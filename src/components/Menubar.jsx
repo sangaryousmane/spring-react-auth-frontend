@@ -5,8 +5,7 @@ import {useNavigate} from "react-router-dom";
 import {useContext, useEffect, useRef, useState} from "react";
 import {AppContext} from "../context/AppContext";
 import {toast} from "react-toastify";
-import authService from "../services/authService";
-import {emailService} from "../services";
+import {emailService, authService} from "../services";
 
 const Menubar = () => {
     const navigate = useNavigate();
@@ -27,20 +26,24 @@ const Menubar = () => {
     const handleLogout = async () => {
 
         try {
-            const response = await authService.logout(`/logout`);
+            const response = await authService.logout();
             if (response.status === 200) {
                 setIsLoggedIn(false);
-                setUserData(false);
+                setUserData(null);
                 navigate("/");
             }
         } catch (err) {
-            toast.error(err.response.data.message);
+            toast.error(
+                err.response?.data?.message ||
+                err.message ||
+                "Logout failed."
+            );
         }
     }
 
     const sendVerificationOTP = async () => {
         try {
-            const response = await emailService.sendOTP(`/send-otp`)
+            const response = await emailService.sendOTP()
                 if (response.status === 200) {
                     navigate("/email-verify");
                     toast.success("OTP sent successfully");
