@@ -1,7 +1,6 @@
 import {Link, useNavigate} from "react-router-dom";
 import {assets} from "../assets/assets";
-import {useContext, useRef, useState} from "react";
-import {AppContext} from "../context/AppContext";
+import {useRef, useState} from "react";
 import {emailService} from "../services";
 import {toast} from "react-toastify";
 
@@ -11,7 +10,6 @@ const ResetPassword = () => {
     const inputRef = useRef([]);
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const {getUserData, isLoggedIn, userData} = useContext(AppContext);
     const [email, setEmail] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [otp, setOtp] = useState("");
@@ -46,7 +44,7 @@ const ResetPassword = () => {
             return;
         }
         setOtp(otp);
-        setIsEmailSent(true);
+        setOTPSubmitted(true);
     }
 
     // Handle the reset of passwords
@@ -56,7 +54,9 @@ const ResetPassword = () => {
         try{
             const response = await emailService.resetPassword(
                 {
-                    otp, newPassword
+                    email,
+                    resetPasswordOTP: otp,
+                    newPassword
                 });
             if (response.status === 200){
                 toast.success("Password reset successfully!");
@@ -94,7 +94,6 @@ const ResetPassword = () => {
         pasted.split("").forEach((digit, i) => {
             inputRef.current[i].value = digit;
         });
-
         inputRef.current[5].focus();
     }
 
@@ -182,7 +181,7 @@ const ResetPassword = () => {
                     <button className="btn btn-primary w-100 fw-semibold"
                             disabled={loading}
                             onClick={handleVerify}>
-                        {loading ? "Verifying..." : "Verify Email"}
+                        {loading ? "Verifying..." : "Submit"}
                     </button>
                 </div>
             )}

@@ -5,6 +5,8 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import EmailVerify from "./pages/EmailVerfiy";
 import ResetPassword from "./pages/ResetPassword";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicOnlyRoute from "./components/PublicOnlyRoute";
 
 function App() {
   return (
@@ -12,9 +14,27 @@ function App() {
         <ToastContainer />
         <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/email-verify" element={<EmailVerify />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
+
+            {/*Login page are available to only unauthenticated users*/}
+            <Route path="/login" element={
+                <PublicOnlyRoute>
+                    <Login />
+                </PublicOnlyRoute>
+            }/>
+
+            {/* Protect the email verification page to only logged-in users */}
+               <Route path="/email-verify" element={
+                   <ProtectedRoute>
+                       <EmailVerify />
+                   </ProtectedRoute>}
+               />
+
+            {/* Protect the password reset page to only unauthenticated users */}
+            <Route path="/reset-password" element={
+                <PublicOnlyRoute>
+                    <ResetPassword />
+                </PublicOnlyRoute>
+            } />
         </Routes>
     </div>
   );
