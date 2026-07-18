@@ -8,6 +8,7 @@ export const AppContextProvider = (props) => {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userData, setUserData] = useState(null);
+    const [role, setRole] = useState(null);
 
     const getUserData = async () => {
         try {
@@ -15,6 +16,7 @@ export const AppContextProvider = (props) => {
 
             if (response.status === 200) {
                 setUserData(response.data);
+                setRole(response.data.role);
             } else{
                 toast.error("Unable to retrieve user profile.");
             }
@@ -50,6 +52,7 @@ export const AppContextProvider = (props) => {
 
     const contextValue = {
         isLoggedIn, setIsLoggedIn,
+        role, setRole,
         userData, setUserData, getUserData, getAuthState
     }
 

@@ -8,7 +8,7 @@ import {AppContext} from "../context/AppContext";
 import authService from "../services/authService";
 
 const Login = () => {
-    const {setIsLoggedIn, getUserData} = useContext(AppContext);
+    const {setIsLoggedIn, getUserData, setRole} = useContext(AppContext);
     const navigate = useNavigate();
     const [isCreateAccount, setIsCreateAccount] = useState(true);
     const [name, setName] = useState("");
@@ -41,6 +41,7 @@ const Login = () => {
                 });
                 if (response.status === 200){
                     setIsLoggedIn(true);
+                    setRole(response.data.role);
                     await getUserData();
                     navigate("/");
                 }
