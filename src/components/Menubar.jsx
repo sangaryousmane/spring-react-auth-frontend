@@ -30,7 +30,7 @@ const Menubar = () => {
             if (response.status === 200) {
                 setIsLoggedIn(false);
                 setUserData(null);
-                navigate("/");
+                navigate("/login");
             }
         } catch (err) {
             toast.error(
@@ -103,10 +103,24 @@ const Menubar = () => {
                             )}
                         </div>
                     ) : (
+                        <>
+                        <div className="btn btn-outline-dark rounded-pill px-3"
+                             onClick={() => navigate("/profile")}>
+                            Profile <i className="bi bi-person me-2"></i>
+                        </div>
+                            <div className="btn btn-outline-dark rounded-pill px-3"
+                             onClick={() => navigate("/reset-password")}>
+                            Change Password <i className="bi bi-key me-2"></i>
+                        </div>
+                            <div className="btn btn-outline-dark rounded-pill px-3"
+                             onClick={() => navigate("/settings")}>
+                            Account Setting <i className="bi bi-gear me-2"></i>
+                        </div>
                         <div className="btn btn-outline-dark rounded-pill px-3"
                              onClick={() => navigate("/login")}>
                             Login <i className="bi bi-arrow-right ms-2"></i>
                         </div>
+                        </>
                     )}
             </nav>
         )

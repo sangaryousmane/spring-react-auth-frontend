@@ -6,6 +6,10 @@ const profileService = {
 
     getProfile() {
         return api.get("/profile");
+    },
+
+    updateProfile(data) {
+        return api.put("/profile", data);
     }
 }
 

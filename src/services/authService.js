@@ -15,6 +15,10 @@ const authService = {
         return api.post("/logout");
     },
 
+    refreshToken() {
+        return api.post("/refresh-token");
+    },
+
     getAuthState(){
         return api.get("/is-authenticated");
     }

@@ -10,9 +10,17 @@ export const AppContextProvider = (props) => {
     const [userData, setUserData] = useState(null);
     const [role, setRole] = useState(null);
 
+    const hasRole = (role) => {
+        return userData?.roles?.some(r => r.name === role);
+    };
+
+    const hasAnyRole = (roles) => {
+        return userData?.roles?.some(r => roles.includes(r.name));
+    };
+
     const getUserData = async () => {
         try {
-            const response = await profileService.getProfile(`/profile`)
+            const response = await profileService.getProfile()
 
             if (response.status === 200) {
                 setUserData(response.data);
@@ -53,7 +61,8 @@ export const AppContextProvider = (props) => {
     const contextValue = {
         isLoggedIn, setIsLoggedIn,
         role, setRole,
-        userData, setUserData, getUserData, getAuthState
+        userData, setUserData, getUserData, getAuthState,
+        hasAnyRole, hasRole
     }
 
     return (
@@ -62,3 +71,5 @@ export const AppContextProvider = (props) => {
         </AppContext.Provider>
     )
 }
+
+// Password@123
